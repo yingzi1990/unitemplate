@@ -4,9 +4,11 @@ import Vue from 'vue'
 import App from './App'
 import store from './store';
 import utils from './utils/util';
+import {pageTo} from './utils/page';
 
 Vue.prototype.$store = store;
 Vue.prototype.$utils = utils;
+Vue.prototype.$pageTo = pageTo;
 
 Vue.config.productionTip = false
 

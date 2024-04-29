@@ -1,6 +1,6 @@
 <template>
     <view class="uni-product-list">
-        <view class="uni-product" v-for="(product,index) in productList" :key="index">
+        <view class="uni-product" v-for="(product,index) in productList" :key="index" @click="pageTo('detail',1,{'id':product.id})">
             <view class="image-view">
                 <image v-if="renderImage" class="uni-product-image" :src="product.image"></image>
             </view>
@@ -73,7 +73,9 @@
         onPullDownRefresh() {},
         onReachBottom() {},
 		methods: {
-		    
+		    pageTo(url,type,data){
+		    	this.$pageTo(url,type,data)
+		    }
 		}
     };
 </script>

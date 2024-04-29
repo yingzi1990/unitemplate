@@ -16,17 +16,24 @@
 <style lang="scss">
 	/*每个页面公共css */
 	@import '@/uni_modules/uni-scss/index.scss';
+	@import '@/iconfont/font.scss';
 	/* #ifndef APP-NVUE */
-	@import '@/static/customicons.css';
+	@import '@/iconfont/customicons.css';
+	/* #endif */
 	// 设置整个项目的背景色
 	page {
+		margin-top: var(--status-bar-height);
 		background-color: #f5f5f5;
 	}
-
-	/* #endif */
-	.example-info {
-		font-size: 14px;
-		color: #333;
-		padding: 10px;
+	.status {
+		width: 100%;
+		height: 0;
+		/*  #ifdef  APP-PLUS  */
+		height: var(--status-bar-height);
+		/*  #endif  */
+		background-color: #ff570a;
+		position: fixed;
+		top: 0;
+		z-index: 999;
 	}
 </style>

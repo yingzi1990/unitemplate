@@ -1,6 +1,6 @@
 import store from "@/store"
 //跳转页面之前判断token以及是否需要登录
-export const pageTo =function(url,obj={},type='1',check=false){
+export const pageTo =function(url,type='1',obj={},check=false){
 	//验证token如不存在则跳转登录页
 	const token = store.state.token;
 	if(check && !token){
