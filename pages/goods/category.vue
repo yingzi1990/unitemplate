@@ -43,8 +43,6 @@
 	</view>
 </template>
 <script>
-	//高德SDK
-	import amap from '@/utils/SDK/amap-wx.js';
 	export default {
 		data() {
 			return {
@@ -101,18 +99,7 @@
 				this.headerPosition = "absolute";
 			}
 		},
-		onLoad() {
-			this.amapPlugin = new amap.AMapWX({  
-				//高德地图KEY，随时失效，请务必替换为自己的KEY，参考：http://ask.dcloud.net.cn/article/35070
-				key: '7c235a9ac4e25e482614c6b8eac6fd8e'  
-			});
-			//定位地址
-			this.amapPlugin.getRegeo({  
-				success: (data) => {
-					this.city = data[0].regeocodeData.addressComponent.city.replace(/市/g,'');//把"市"去掉
-				}  
-			}); 
-		},
+		onLoad() {},
 		methods: {
 			//分类切换显示
 			showCategory(index){

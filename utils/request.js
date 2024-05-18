@@ -4,12 +4,12 @@ import utils from '@/utils/util'
 var fly = new Fly;
 if (process.env.NODE_ENV === 'development') {
 	//开发环境请求地址---在manifest.json配置跨域
-	//fly.config.baseURL = "/api"
-	fly.config.baseURL = `${utils.serveUrl}/api`
+	console.log("开发环境")
+	fly.config.baseURL = `${utils.serveUrl}`
 } else if (process.env.NODE_ENV === 'production') {
+	console.log("正式环境")
 	//正式环境请求地址
-	fly.config.baseURL = `${utils.serveUrl}/api`
-	//fly.config.baseURL = `/api`
+	fly.config.baseURL = `${utils.serveUrl}`
 }
 // 添加请求拦截器
 fly.interceptors.request.use((request) => {
@@ -28,7 +28,7 @@ fly.interceptors.request.use((request) => {
 	}
 	//最后删除标记
 	delete request.body['checkFree']
-	return request
+	return Promise.resolve(request)
 }, function(error) {
 	uni.showToast({
 		title: '发送请求失败!',
@@ -49,13 +49,17 @@ fly.interceptors.response.use((res) => {
 		});
 		return Promise.reject(res.data.msg)
 	}
-	return res.data
+	return Promise.resolve(res.data)
 }, (error) => {
 	if ([401].includes(error.status)) {
 		console.log('401响应',utils.getUrl())
 		uni.setStorageSync('lastVisitedPage', utils.getUrl());
-		let storeuser = {'token':''}
-		store.commit('setUser',storeuser)
+		let setToken = ''
+		store.commit('setToken',setToken)
+		uni.redirectTo({
+			url: '/pages/login/index'
+		})
+		return Promise.reject("跳转登录页面")
 	} else {
 		uni.showToast({
 			title: '加载数据失败',

@@ -117,6 +117,9 @@ export default {
     _$emit(emitName) {
       let pickObj = {
         label: this._getLabel(),
+		province:this.provinceDataList[this.pickerValue[0]].label,
+		city:this.cityDataList[this.pickerValue[1]].label,
+		area:this.areaDataList[this.pickerValue[2]].label,
         value: this.pickerValue,
         cityCode: this._getCityCode()
       };

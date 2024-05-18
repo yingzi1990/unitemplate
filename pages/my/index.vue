@@ -1,7 +1,7 @@
 <template>
 	<view>
-		<view v-if="showHeader" class="status" :style="{position:headerPosition,top:statusTop}"></view>
-		<view v-if="showHeader" class="header" :style="{position:headerPosition,top:headerTop}">
+		<view class="status" :style="{position:headerPosition,top:statusTop}"></view>
+		<view class="header" :style="{position:headerPosition,top:headerTop}">
 			<view class="addr"></view>
 			<view class="input-box">
 				
@@ -12,20 +12,35 @@
 			</view>
 		</view>
 		<!-- 占位 -->
-		<view v-if="showHeader" class="place"></view>
+		<view class="place"></view>
 		<!-- 用户信息 -->
-		<view class="user">
+		<view class="user"  v-if="token">
 			<!-- 头像 -->
 			<view class="left">
-				<image :src="user.face" @tap="pageTo('/pages/my/setting')"></image>
+				<image :src="userinfo.head_img" @tap="pageTo('/pages/my/setting')"></image>
 			</view>
 			<!-- 昵称,个性签名 -->
-			<view class="right" @tap="pageTo('/pages/login/index')">
-				<view class="username">{{user.username}}</view>
-				<view class="signature">{{user.signature}}</view>
+			<view class="right" @tap="pageTo('/pages/my/setting')">
+				<view class="username">{{userinfo.nickname}}</view>
+				<view class="signature">{{userinfo.username}}</view>
 			</view>
 			<!-- 二维码按钮 -->
 			<view class="erweima" @tap="pageTo('/pages/my/myQR')">
+				<view class="icon qr"></view>
+			</view>
+		</view>
+		<view class="user" v-else>
+			<!-- 头像 -->
+			<view class="left">
+				<image src="/static/logo.png" @tap="pageTo('/pages/login/index')"></image>
+			</view>
+			<!-- 昵称,个性签名 -->
+			<view class="right" @tap="pageTo('/pages/login/index')">
+				<view class="username">游客</view>
+				<view class="signature">个性签名</view>
+			</view>
+			<!-- 二维码按钮 -->
+			<view class="erweima" @tap="pageTo('/pages/login/index')">
 				<view class="icon qr"></view>
 			</view>
 		</view>
@@ -41,7 +56,7 @@
 		<view class="order">
 			<!-- 订单类型 -->
 			<view class="list">
-				<view class="box" v-for="(row,index) in orderList" :key="index" @tap="toOrderList(index)">
+				<view class="box" v-for="(row,index) in orderList" :key="index" @tap="pageTo(row.url)">
 					<view class="img">
 						<view class="icon" :class="row.icon"></view>
 					</view>
@@ -52,20 +67,20 @@
 			<view class="balance-info">
 				<view class="left">
 					<view class="box">
-						<view class="num">{{user.integral}}</view>
+						<view class="num">{{userinfo.score||'0.00'}}</view>
 						<view class="text">积分</view>
 					</view>
 					<view class="box">
-						<view class="num">{{user.envelope}}</view>
+						<view class="num">{{userinfo.score||'0.00'}}</view>
 						<view class="text">佣金</view>
 					</view>
 					<view class="box">
-						<view class="num">{{user.balance}}</view>
+						<view class="num">{{userinfo.money||'0.00'}}</view>
 						<view class="text">余额</view>
 					</view>
 				</view>
 				<view class="right">
-					<view class="box" @tap="toDeposit">
+					<view class="box" @tap="pageTo('/pages/my/deposit')">
 						<view class="img">
 							<view class="icon chongzhi"></view>
 						</view>
@@ -91,6 +106,7 @@
 	</view>
 </template>
 <script>
+	import {userIndex} from "@/api/user"
 	export default {
 		data() {
 			return {
@@ -98,45 +114,36 @@
 				headerPosition:"fixed",
 				headerTop:null,
 				statusTop:null,
-				showHeader:true,
-				//个人信息,
-				user:{
-					username:'游客',
-					face:'/static/logo.png',
-					signature:'点击昵称跳转登录/注册页',
-					integral:0,
-					balance:0,
-					envelope:0
-				},
 				// 订单类型
 				orderList:[
-					{text:'待付款',icon:"fukuan"},
-					{text:'待发货',icon:"fahuo"},
-					{text:'待收货',icon:"shouhuo"},
-					{text:'待评价',icon:"pingjia"},
-					{text:'退换货',icon:"tuihuo"}
+					{text:'待付款',icon:"fukuan",url:'/pages/order/orderlist?tbIndex=1'},
+					{text:'待发货',icon:"fahuo",url:'/pages/order/orderlist?tbIndex=2'},
+					{text:'待收货',icon:"shouhuo",url:'/pages/order/orderlist?tbIndex=3'},
+					{text:'待评价',icon:"pingjia",url:'/pages/order/orderlist?tbIndex=4'},
+					{text:'已完成',icon:"tuihuo",url:'/pages/order/orderlist?tbIndex=5'}
 				],
 				// 工具栏列表
 				mytoolbarList:[
-					{url:'/user/keep/keep',text:'我的收藏',img:'/static/icon/point.png'},
-					{url:'/user/coupon/coupon',text:'优惠券',img:'/static/icon/quan.png'}, 
-					{url:'',text:'新客豪礼',img:'/static/icon/renw.png'},
-					{url:'',text:'领红包',img:'/static/icon/momey.png'},
-					
-					{url:'/user/address/address',text:'收货地址',img:'/static/icon/addr.png'},
-					{url:'',text:'账户安全',img:'/static/icon/security.png'},
-					{url:'',text:'银行卡',img:'/static/icon/bank.png'},
-					{url:'',text:'抽奖',img:'/static/icon/choujiang.png'},
+					{url:'/pages/my/keep',text:'我的收藏',img:'/static/icon/point.png'},
+					{url:'/pages/my/coupon',text:'优惠券',img:'/static/icon/quan.png'}, 
+					{url:'/pages/address/address',text:'收货地址',img:'/static/icon/addr.png'},
+					{url:'/pages/my/resetpwd',text:'账户安全',img:'/static/icon/security.png'},
+					// {url:'',text:'新客豪礼',img:'/static/icon/renw.png'},
+					// {url:'',text:'领红包',img:'/static/icon/momey.png'},
+					// {url:'',text:'银行卡',img:'/static/icon/bank.png'},
+					// {url:'',text:'抽奖',img:'/static/icon/choujiang.png'},
 					// {text:'客服',img:'/static/icon/kefu.png'},
 					// {text:'签到',img:'/static/icon/mingxi.png'}
 				]
 			}
 		},
-		//下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 "enablePullDownRefresh": true
-		onPullDownRefresh() {
-		    setTimeout(function () {
-		        uni.stopPullDownRefresh();
-		    }, 1000);
+		computed: {
+			token() {
+				return this.$store.state.token
+			},
+			userinfo(){
+				return this.$store.state.userInfo
+			}
 		},
 		onPageScroll(e){
 			//兼容iOS端下拉时顶部漂移
@@ -147,13 +154,23 @@
 		onLoad() {
 			this.statusHeight = 0;
 			// #ifdef APP-PLUS
-			this.showHeader = false;
 			this.statusHeight = plus.navigator.getStatusbarHeight();
+			console.log(this.statusHeight)
 			// #endif
 		},
 		onReady(){},
-		onShow(){},
+		onShow(){
+			//获取用户信息
+			if (this.token) {
+				this.getUserinfo()
+			}
+		},
 		methods: {
+			getUserinfo(){
+				userIndex().then(data =>{
+					this.$store.commit('setUserInfo', data)
+				})
+			},
 			pageTo(url,type,data){
 				this.$pageTo(url,type,data)
 			}
@@ -162,18 +179,6 @@
 </script>
 <style lang="scss">
 	page{position: relative;background-color: #fff;}
-	.status {
-		width: 100%;
-		height: 0;
-		position: fixed;
-		z-index: 10;
-		background-color: #f06c7a;
-		top: 0;
-		/*  #ifdef  APP-PLUS  */
-		height: var(--status-bar-height);//覆盖样式
-		/*  #endif  */
-		
-	}
 	
 	.header{
 		width: 92%;

@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view v-if="showHeader" class="status" :style="{position:headerPosition,top:statusTop}"></view>
+		<view class="status" :style="{position:headerPosition,top:statusTop}"></view>
 		<view v-if="showHeader" class="header" :style="{position:headerPosition,top:headerTop}">
 			<view class="title">购物车</view>
 		</view>
@@ -87,7 +87,8 @@
 				//控制滑动效果
 				theIndex:null,
 				oldIndex:null,
-				isStop:false
+				isStop:false,
+				footerbottom:'0px'
 			}
 		},
 		onPageScroll(e){

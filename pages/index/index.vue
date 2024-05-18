@@ -20,7 +20,7 @@
 		<!-- 轮播图 -->
 		<view class="swiper-view">
 			<swiper class="swiper" indicator-dots="true" autoplay="true" circular="true" indicator-active-color="#ffffff">
-				<swiper-item v-for="swiper in swiperList" :key="swiper.id" @click="toSwiper(swiper)">
+				<swiper-item v-for="swiper in swiperList" :key="swiper.id">
 					<image mode="aspectFill" :src="swiper.img"></image>
 				</swiper-item>
 			</swiper>

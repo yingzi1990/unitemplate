@@ -2,7 +2,12 @@ import fly from '@/utils/request.js';
 
 //用户个人信息
 export const userIndex = function(data = {}) {
-	return fly.post('/User/index', data)
+	//return fly.post('/User/index', data)
+	//模拟登录返回数据
+	var promise = new Promise(function(resolve,reject){
+		resolve({'username':'18888888888','nickname':"张三",'head_img':'/static/logo.png'})
+	})
+	return promise
 }
 
 //修改个人信息

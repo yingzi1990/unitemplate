@@ -23,7 +23,7 @@
 	// 设置整个项目的背景色
 	page {
 		margin-top: var(--status-bar-height);
-		background-color: #f5f5f5;
+		background-color: #fff;
 	}
 	.status {
 		width: 100%;
@@ -31,7 +31,7 @@
 		/*  #ifdef  APP-PLUS  */
 		height: var(--status-bar-height);
 		/*  #endif  */
-		background-color: #ff570a;
+		background-color: #fff;
 		position: fixed;
 		top: 0;
 		z-index: 999;
